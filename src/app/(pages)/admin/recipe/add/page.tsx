@@ -14,7 +14,7 @@ import { start } from 'repl';
 import FormPopup from '@/app/components/generic/formPopup';
 import Router from 'next/router';
 import Link from 'next/link';
-import { FileOrUndefined, Recipe } from '@/app/types';
+import { FileOrUndefined, Recipe, RecipeSection } from '@/app/types';
 import ImageUploadPopUp from '@/app/components/popUps/ImageUploadPopUp/imageUploadPopUp';
 import { GetRecipe, PostRecipe, UploadImage } from '@/app/integration/cloudinary/recipeMethods';
 import { Url } from 'url';
@@ -24,6 +24,7 @@ import AddIngredientPopup from './components/addIngredientPopup';
 import Switch from '@/app/components/generic/switch';
 import SchedulePopup from '../../../../components/popUps/schedulePopUp/schedulePopup';
 import { GetDate } from '@/app/integration/globalMethods';
+import Tiptap from '@/app/components/external/TextEditor/tipTap';
 
 export default function RecipePage(){
     const [isSaved, setSaved] = useState(false)
@@ -53,6 +54,21 @@ export default function RecipePage(){
         active: false,
         publishedDate: GetDate()
     })
+
+    const [recipeSections, setRecipeSections] = useState<RecipeSection[]>([
+        {
+            recipeId: "",
+            title: "Ingredients",
+            richText: "<p>Enter text here.</p>",
+            order: 0
+        },
+        {
+            recipeId: "",
+            title: "Instructions",
+            richText: "<p>Enter text here.</p>",
+            order: 0
+        },
+    ])
 
     function UpdateTitle(value: string){
         setRecipeData({...recipeData, title: value})
@@ -158,6 +174,14 @@ export default function RecipePage(){
 
     function UpdateSummary(value: string){
         setRecipeData({...recipeData, summary: value})
+    }
+
+    function UpdateRichText(value: string, index: number){
+        let tempSections = recipeSections
+
+        tempSections[0].richText = value
+
+        setRecipeSections([...tempSections])
     }
 
     function ActiveOnSave(value: boolean){
@@ -290,7 +314,10 @@ export default function RecipePage(){
                         </li>
                     </ul>
                     <br/>
-                    <TextArea inputClassName="mt-5 h-64"  label="Ingredients Notes" placeholder="Enter short recipe description"/>
+                    {
+                    // <TextArea inputClassName="mt-5 h-64"  label="Ingredients Notes" placeholder="Enter short recipe description"/>
+                    }
+                    <Tiptap defaultValue={recipeSections[0].richText} setValue={UpdateRichText} index={0}/>
                 </p>
 
                 {popupOpen && <AddIngredientPopup setPopUpOpen={setPopupOpen} popupOpen={popupOpen}/>}
@@ -306,7 +333,3 @@ export default function RecipePage(){
         </main>
     )
 }
-
-
-
-

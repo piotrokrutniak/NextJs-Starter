@@ -28,9 +28,9 @@ export type RecipeIngredient = {
 }
 
 export type RecipeSection = {
-    _id?: String,
-    recipeId: String,
-    title: String,
-    richText: String,
-    order: Number
+    _id?: string,
+    recipeId: string,
+    title: string,
+    richText: string,
+    order: number
 }
