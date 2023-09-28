@@ -1,14 +1,14 @@
 // src/Tiptap.jsx
 import { useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import Placeholder from '@tiptap/extension-placeholder'
 import MenuBar from './menu'
+import { useState } from 'react'
 
 // define your extension array
 const extensions = [
   StarterKit,
 ]
-
-
 
 async function GetText(editor: any, setValue: any, index: number){
   let text = await editor?.getText()
@@ -17,20 +17,26 @@ async function GetText(editor: any, setValue: any, index: number){
 
 export default function Tiptap({setValue, defaultValue, index = -1} : {setValue: any; defaultValue?: string; index: number}){
 
-  const content = defaultValue ?? '<p>Enter text here.</p>'
+  const content = defaultValue ?? ""
+  const [focused, setFocused] = useState(false)
 
   const editor = useEditor({
     extensions,
     content,
     editorProps: {
     attributes: {
-      class: 'prose dark:prose-invert h-52 prose-sm sm:prose-base lg:prose-lg xl:prose-2xl m-5 focus:outline-none',
+      class: 'prose dark:prose-invert h-full prose-sm sm:prose-base lg:prose-lg xl:prose-2xl focus:outline-none',
     },
   }})
 
   return (
-    <>
-      <EditorContent onBlur={() => GetText(editor, setValue, index)} className="bg-slate-500/40 h-52 focus-within:bg-slate-500/50 transition-all mt-5 p-1 rounded-lg" editor={editor} />
+    <div className="h-80 rounded-lg mt-5 overflow-hidden">
+      <EditorContent className="bg-slate-500/40 overflow-y-auto h-full focus-within:bg-slate-500/50 transition-all p-5 rounded-lg relative"
+        onBlur={() => {GetText(editor, setValue, index); setFocused(false)}}
+        onFocus={() => setFocused(true)}
+        editor={editor}>
+        {editor?.getText() == "" && !focused && <div className="absolute top-0 select-none opacity-60 pt-5">Start typing...</div>}
+      </EditorContent>
       {
         editor && 
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
@@ -56,6 +62,6 @@ export default function Tiptap({setValue, defaultValue, index = -1} : {setValue:
           </div>
         </BubbleMenu>
       }
-    </>
+    </div>
   )
 }

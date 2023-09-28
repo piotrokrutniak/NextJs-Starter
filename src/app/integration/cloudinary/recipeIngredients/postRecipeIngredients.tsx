@@ -18,7 +18,7 @@ export default async function PostRecipeIngredients(data: { _id: string; name: s
                             headers:{
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify(data)
+                            body: JSON.stringify(ingredients)
                         }
     )
 

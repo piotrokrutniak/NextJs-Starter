@@ -25,6 +25,7 @@ import Switch from '@/app/components/generic/switch';
 import SchedulePopup from '../../../../components/popUps/schedulePopUp/schedulePopup';
 import { GetDate } from '@/app/integration/globalMethods';
 import Tiptap from '@/app/components/external/TextEditor/tipTap';
+import PostRecipeSections from '@/app/integration/cloudinary/recipeSections/postRecipeSections';
 
 export default function RecipePage(){
     const [isSaved, setSaved] = useState(false)
@@ -35,8 +36,6 @@ export default function RecipePage(){
     const [formValidated, setFormValidated] = useState(false)
     const [thumbnail, setThumbnail] = useState<FileOrUndefined>(undefined)
     const [fileToUpload, setFileToUpload] = useState<FileOrUndefined>()
-    const [published, setPublished] = useState<boolean>(false)
-    const [publishedDate, setPublishedDate] = useState<string>(GetDate())
 
     const fileInput = useRef<HTMLInputElement | null>(null)
 
@@ -59,13 +58,13 @@ export default function RecipePage(){
         {
             recipeId: "",
             title: "Ingredients",
-            richText: "<p>Enter text here.</p>",
+            richText: "",
             order: 0
         },
         {
             recipeId: "",
             title: "Instructions",
-            richText: "<p>Enter text here.</p>",
+            richText: "",
             order: 0
         },
     ])
@@ -179,7 +178,7 @@ export default function RecipePage(){
     function UpdateRichText(value: string, index: number){
         let tempSections = recipeSections
 
-        tempSections[0].richText = value
+        tempSections[index].richText = value
 
         setRecipeSections([...tempSections])
     }
@@ -188,11 +187,11 @@ export default function RecipePage(){
         setRecipeData({...recipeData, active: value})
     }
 
-    async function SaveRecipe(){
+    async function SaveRecipe(recipeId = "undefined"){
         const validated = ValidateForm()
         console.log(validated)
         console.log(formValidated)
-
+        let createdRecipeId = recipeId
 
         if(!formValidated){
             return
@@ -206,9 +205,16 @@ export default function RecipePage(){
 
         PostRecipe(recipeData)
             .then(res => {
+                createdRecipeId = res.recipeCreated._id
+            })
+            .then(() => {
                 if(ingredients.length > 0){
-                    PostRecipeIngredients(ingredients, res.recipeCreated._id)
+                    
+                    PostRecipeIngredients(ingredients, createdRecipeId)
                 }
+            })
+            .then(() => {
+                PostRecipeSections(recipeSections, createdRecipeId)
             })
 
         setTimeout(() => setSaved(false), 2000)
@@ -328,7 +334,7 @@ export default function RecipePage(){
                     <BsCardList className="h-7 w-7 place-self-center fill-vermilion-400"/> 
                     Instructions
                 </h2>
-                <TextArea inputClassName="mt-5 h-96"  label="Detailed Recipe Instructions" placeholder="Enter detailed recipe instructions"/>
+                <Tiptap defaultValue={recipeSections[1].richText} setValue={UpdateRichText} index={1}/>
             </section>
         </main>
     )
