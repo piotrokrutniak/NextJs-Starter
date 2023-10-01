@@ -56,7 +56,7 @@ function Ingredient({setPopupOpen, id, remove, updateIngredient, updateIngredien
     const [resultsOpen, setResultsOpen] = useState(false)
     const [discardStarted, setDiscardStarted] = useState(false)
     const [searchString, setSearchString] = useState("")
-
+    const [validated, setValidated] = useState(false)
     const [selectedIngredient, setSelectedIngredient] = useState("")
 
 
@@ -116,12 +116,16 @@ function Ingredient({setPopupOpen, id, remove, updateIngredient, updateIngredien
 
     function UpdateDescription(desc: string){
         updateIngredientDesc(desc, id)
-        console.log(desc)
+        setValidated(desc.length > 0)
     }
 
     return(
-        <li className="flex relative w-fit place-items-center gap-4 py-1 text-base">
-            <FormInput className="w-96" placeholder="Enter ingredient description" onChange={UpdateDescription} onBlur={validateForm}/>
+        <li className={`${validated ? "" : "mb-3"} flex relative w-fit place-items-center gap-4 py-1 text-base`}>
+            <FormInput className="w-96" placeholder="Enter ingredient description" 
+                validationResult={validated}
+                validationMessage="The ingredient description is required."
+                onChange={UpdateDescription} 
+                onBlur={validateForm}/>
 
             {selectedIngredient ? 
             <>

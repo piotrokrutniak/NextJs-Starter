@@ -230,7 +230,7 @@ export default function RecipePage(){
             }
 
             {scheduleOpen &&
-            <div className="w-full h-full fixed top-0 left-0 bg-black/50 backdrop-blur-md z-50 text-white">
+            <div className="w-full h-full fixed top-0 left-0 bg-black/50 backdrop-blur-md z-50 text-white flex">
                 <SchedulePopup setPopUpOpen={setScheduleOpen} popupOpen={scheduleOpen} date={recipeData.publishedDate} setDate={UpdatePublishDate}/>
             </div>
             }
@@ -258,7 +258,7 @@ export default function RecipePage(){
                                 <p className="place-self-center place-items-center text-white/80 flex gap-2">
                                     Preparation time:
                                     <FormInput className="w-16" inputClassName="w-fit text-center" placeholder="0" validationMessage="Must be a number greater than 0." 
-                                        messageClassName="absolute -bottom-6 -right-17 w-fit whitespace-nowrap"
+                                        messageClassName="-bottom-6 -right-16 w-fit whitespace-nowrap"
                                         validationResult={formValidation.preparationTime} onBlur={ValidatePreparationTime} onChange={UpdatePreparationTime}/> 
                                     minutes
                                 </p>

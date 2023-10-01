@@ -10,7 +10,7 @@ export default function FormInput({...props}){
                 onFocus={() => props.onFocus()}
                 className={`${props.inputClassName ?? ""} p-3 w-full text-base rounded-lg outline-none bg-slate-500/40 focus:bg-slate-500/50 border-2 border-transparent focus:border-sky-100/50
                 transition-all`}/>
-            {props.validationResult ? <></> : <h3 className={`${props.messageClassName ?? ""} text-vermilion-400 text-base flex flex-row-reverse`}>{props.validationMessage}</h3>}
+            {props.validationResult ? <></> : <h3 className={`${props.messageClassName ?? ""} text-vermilion-400 text-base flex flex-row-reverse absolute -bottom-6 right-0`}>{props.validationMessage}</h3>}
         </div>
     )
 }
